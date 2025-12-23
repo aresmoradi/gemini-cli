@@ -16,47 +16,80 @@ interface SkillsListProps {
 
 export const SkillsList: React.FC<SkillsListProps> = ({
   skills,
+
   showDescriptions,
 }) => {
-  const sortedSkills = [...skills].sort((a, b) => {
-    if (!!a.disabled !== !!b.disabled) {
-      return a.disabled ? 1 : -1;
-    }
-    return a.name.localeCompare(b.name);
-  });
+  const enabledSkills = skills
+
+    .filter((s) => !s.disabled)
+
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const disabledSkills = skills
+
+    .filter((s) => s.disabled)
+
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const renderSkill = (skill: SkillDefinition) => (
+    <Box key={skill.name} flexDirection="row">
+      <Text color={theme.text.primary}>{'  '}- </Text>
+
+      <Box flexDirection="column">
+        <Text
+          bold
+          color={skill.disabled ? theme.text.secondary : theme.text.accent}
+          dimColor={skill.disabled}
+        >
+          {skill.name}
+        </Text>
+
+        {showDescriptions && skill.description && (
+          <Box marginLeft={2}>
+            <Text color={theme.text.secondary} dimColor={skill.disabled}>
+              {skill.description}
+            </Text>
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
 
   return (
     <Box flexDirection="column" marginBottom={1}>
-      <Text bold color={theme.text.primary}>
-        Available Agent Skills:
-      </Text>
-      <Box height={1} />
-      {sortedSkills.length > 0 ? (
-        sortedSkills.map((skill) => (
-          <Box key={skill.name} flexDirection="row">
-            <Text color={theme.text.primary}>{'  '}- </Text>
-            <Box flexDirection="column">
-              <Text
-                bold
-                color={
-                  skill.disabled ? theme.text.secondary : theme.text.accent
-                }
-                dimColor={skill.disabled}
-              >
-                {skill.name}
-                {skill.disabled ? ' (disabled)' : ''}
-              </Text>
-              {showDescriptions && skill.description && (
-                <Box marginLeft={2}>
-                  <Text color={theme.text.secondary} dimColor={skill.disabled}>
-                    {skill.description}
-                  </Text>
-                </Box>
-              )}
-            </Box>
-          </Box>
-        ))
-      ) : (
+      {enabledSkills.length > 0 && (
+        <Box flexDirection="column">
+          <Text bold color={theme.text.primary}>
+            Available Agent Skills:
+          </Text>
+
+          <Box height={1} />
+
+          {enabledSkills.map(renderSkill)}
+        </Box>
+      )}
+
+      {enabledSkills.length > 0 && disabledSkills.length > 0 && (
+        <Box marginY={1}>
+          <Text color={theme.text.secondary} dimColor>
+            {'-'.repeat(20)}
+          </Text>
+        </Box>
+      )}
+
+      {disabledSkills.length > 0 && (
+        <Box flexDirection="column">
+          <Text bold color={theme.text.secondary} dimColor>
+            Disabled Skills:
+          </Text>
+
+          <Box height={1} />
+
+          {disabledSkills.map(renderSkill)}
+        </Box>
+      )}
+
+      {skills.length === 0 && (
         <Text color={theme.text.primary}> No skills available</Text>
       )}
     </Box>
