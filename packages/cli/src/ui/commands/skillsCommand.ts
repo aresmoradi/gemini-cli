@@ -15,10 +15,49 @@ import { SettingScope } from '../../config/settings.js';
 export const skillsCommand: SlashCommand = {
   name: 'skills',
   description:
-    'List, enable, or disable Gemini CLI agent skills. Usage: /skills [nodesc | disable <name> | enable <name>]',
+    'List, enable, or disable Gemini CLI agent skills. Usage: /skills [list | disable <name> | enable <name>]',
   kind: CommandKind.BUILT_IN,
   autoExecute: false,
   subCommands: [
+    {
+      name: 'list',
+      description: 'List available agent skills. Usage: /skills list [nodesc]',
+      action: async (context: CommandContext, args?: string): Promise<void> => {
+        const subCommand = args?.trim();
+
+        // Default to SHOWING descriptions. The user can hide them with 'nodesc'.
+        let useShowDescriptions = true;
+        if (subCommand === 'nodesc') {
+          useShowDescriptions = false;
+        }
+
+        const skillManager = context.services.config?.getSkillManager();
+        if (!skillManager) {
+          context.ui.addItem(
+            {
+              type: MessageType.ERROR,
+              text: 'Could not retrieve skill manager.',
+            },
+            Date.now(),
+          );
+          return;
+        }
+
+        const skills = skillManager.getSkills();
+
+        const skillsListItem: HistoryItemSkillsList = {
+          type: MessageType.SKILLS_LIST,
+          skills: skills.map((skill) => ({
+            name: skill.name,
+            description: skill.description,
+            disabled: skill.disabled,
+          })),
+          showDescriptions: useShowDescriptions,
+        };
+
+        context.ui.addItem(skillsListItem, Date.now());
+      },
+    },
     {
       name: 'disable',
       description: 'Disable a skill by name. Usage: /skills disable <name>',
@@ -137,55 +176,35 @@ export const skillsCommand: SlashCommand = {
   action: async (context: CommandContext, args?: string): Promise<void> => {
     const subCommand = args?.trim();
 
-    if (subCommand?.startsWith('disable ')) {
+    if (subCommand?.startsWith('list ')) {
       return skillsCommand.subCommands![0].action(
+        context,
+        subCommand.slice('list '.length),
+      );
+    }
+    if (subCommand === 'list') {
+      return skillsCommand.subCommands![0].action(context, '');
+    }
+    if (subCommand?.startsWith('disable ')) {
+      return skillsCommand.subCommands![1].action(
         context,
         subCommand.slice('disable '.length),
       );
     }
     if (subCommand === 'disable') {
-      return skillsCommand.subCommands![0].action(context, '');
+      return skillsCommand.subCommands![1].action(context, '');
     }
     if (subCommand?.startsWith('enable ')) {
-      return skillsCommand.subCommands![1].action(
+      return skillsCommand.subCommands![2].action(
         context,
         subCommand.slice('enable '.length),
       );
     }
     if (subCommand === 'enable') {
-      return skillsCommand.subCommands![1].action(context, '');
+      return skillsCommand.subCommands![2].action(context, '');
     }
 
-    // Default to SHOWING descriptions. The user can hide them with 'nodesc'.
-    let useShowDescriptions = true;
-    if (subCommand === 'nodesc') {
-      useShowDescriptions = false;
-    }
-
-    const skillManager = context.services.config?.getSkillManager();
-    if (!skillManager) {
-      context.ui.addItem(
-        {
-          type: MessageType.ERROR,
-          text: 'Could not retrieve skill manager.',
-        },
-        Date.now(),
-      );
-      return;
-    }
-
-    const skills = skillManager.getSkills();
-
-    const skillsListItem: HistoryItemSkillsList = {
-      type: MessageType.SKILLS_LIST,
-      skills: skills.map((skill) => ({
-        name: skill.name,
-        description: skill.description,
-        disabled: skill.disabled,
-      })),
-      showDescriptions: useShowDescriptions,
-    };
-
-    context.ui.addItem(skillsListItem, Date.now());
+    // Default to 'list' if no other subcommand matches
+    return skillsCommand.subCommands![0].action(context, subCommand);
   },
 };

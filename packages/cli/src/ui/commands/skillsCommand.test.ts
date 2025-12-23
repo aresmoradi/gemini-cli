@@ -51,8 +51,24 @@ describe('skillsCommand', () => {
     );
   });
 
-  it('should disable descriptions if "nodesc" arg is provided', async () => {
-    await skillsCommand.action(context, 'nodesc');
+  it('should list skills when "list" subcommand is used', async () => {
+    await skillsCommand.action(context, 'list');
+
+    expect(context.ui.addItem).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: MessageType.SKILLS_LIST,
+        skills: [
+          { name: 'skill1', description: 'desc1' },
+          { name: 'skill2', description: 'desc2' },
+        ],
+        showDescriptions: true,
+      }),
+      expect.any(Number),
+    );
+  });
+
+  it('should disable descriptions if "nodesc" arg is provided to list', async () => {
+    await skillsCommand.action(context, 'list nodesc');
 
     expect(context.ui.addItem).toHaveBeenCalledWith(
       expect.objectContaining({
