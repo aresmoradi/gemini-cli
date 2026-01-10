@@ -67,8 +67,13 @@ To validate that your extension is correctly installed or linked:
 
 1.  **List Extensions**: Run `gemini extensions list`.
 2.  **Troubleshooting**: Run `gemini extensions list --debug` to see detailed
-    logs about which extension components (commands, hooks, skills) are being
-    loaded.
+    loading logs for commands, hooks, and skills.
+3.  **Component Verification**: Follow the specific verification steps for the
+    components your extension provides (Commands, Hooks, Skills, MCP).
+    - **Security & Confirmation**: **You must inform the user** when performing
+      headless verification that `--allowed-tools` bypasses confirmation
+      prompts. If you run the command yourself, **wait for user approval**.
+    - **Debug Mode**: Use the `--debug` flag to inspect component loading.
 
 ## Documentation
 

@@ -71,9 +71,13 @@ Extensions provide commands by placing TOML files in a `commands/` subdirectory.
 
 To validate a newly created or modified slash command headlessly:
 
-- **Command**: `gemini --allowed-tools <tool_names> "/<command_name> <args>"`
-- **Troubleshooting**: If the command is not discovered or fails to execute, add
-  the `--debug` flag to the command above to see detailed logs.
+- **Targeted Command**:
+  `gemini --debug --allowed-tools <minimal_tools> "/<command_name> <args>"`
+- **Security & Confirmation**: **You must inform the user** that
+  `--allowed-tools` bypasses confirmation prompts. If you run the command
+  yourself, **wait for user approval**.
+- **Troubleshooting**: Use the `--debug` flag to inspect discovery and execution
+  logs.
 
 **Note**:
 

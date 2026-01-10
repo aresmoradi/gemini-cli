@@ -67,15 +67,18 @@ and Extensions) without needing to restart the CLI.
 
 To validate that a skill is correctly discovered and can be activated:
 
-1.  **Activation**: Headlessly trigger the skill using:
-    `gemini --allowed-tools activate_skill,<additional_tools> "your prompt to trigger the skill"`
-2.  **Troubleshooting**: Add the `--debug` flag to the command above to verify
-    skill discovery and activation logs if the skill fails to trigger.
-3.  **UI List**: **The user** can use `/skills list` in an interactive session
-    to see all available skills and their enabled status.
+1.  **Targeted Activation**: Headlessly trigger the skill using:
+    `gemini --debug --allowed-tools activate_skill,<minimal_tools> "your targeted prompt"`
+2.  **Security & Confirmation**: **You must inform the user** that
+    `--allowed-tools` bypasses confirmation prompts. If you run the command
+    yourself, **wait for user approval**.
+3.  **Troubleshooting**: Inspect the `--debug` logs to verify skill discovery
+    and activation.
+4.  **UI List**: **The user** can use `/skills list` in an interactive session.
 
-**Note**: When verifying headlessly, you must include any tools the skill
-intends to use in the `--allowed-tools` list (comma-separated).
+**Note**: You must include any _modifying_ tools the skill intends to use in the
+`--allowed-tools` list. Read-only tools like `read_file` are permitted by
+default headlessly.
 
 ## Documentation
 

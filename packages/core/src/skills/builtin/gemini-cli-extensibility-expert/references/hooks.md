@@ -99,18 +99,18 @@ Extensions provide hooks in `hooks/hooks.json` (not `gemini-extension.json`).
 To verify that your hooks are executing correctly headlessly:
 
 1.  **Instrument your Hook**: Add a debug statement to your hook script that
-    writes to `stderr` (e.g., `console.error('Hook triggered!')` in JS or
-    `echo 'Hook triggered!' >&2` in Bash).
-2.  **Trigger the Event**: Run a headless prompt that you know will trigger the
-    hook's event (e.g., if you have a `BeforeTool` hook for `read_file`, run
-    `gemini "read the file GEMINI.md"`).
-3.  **Use Debug Mode**: Run the trigger command with the `--debug` flag:
-    - **Command**: `gemini --debug "your trigger prompt"`
-4.  **Inspect Logs**: Check the debug output for your hook's `stderr` message
-    and for `HookRunner` logs showing the JSON input/output exchanged with your
-    hook.
-5.  **Clean up**: **Remember to remove the debug instrumentation from your hook
-    script before finalizing.**
+    writes to `stderr` (e.g., `console.error('Hook triggered!')` in JS).
+2.  **Targeted Trigger**: Run a headless prompt designed to trigger the event.
+    - **Command**:
+      `gemini --debug --allowed-tools <minimal_tools> "your targeted prompt"`
+    - **Note**: `read_file` does not need to be in `--allowed-tools` for
+      read-only headless operations.
+3.  **Security & Confirmation**: **You must inform the user** that
+    `--allowed-tools` bypasses confirmation prompts. If you run the command
+    yourself, **wait for user approval**.
+4.  **Inspect Logs**: Check debug output for your hook's `stderr` and
+    `HookRunner` logs.
+5.  **Clean up**: Remove debug instrumentation before finalizing.
 
 For manual verification, **the user** can view registered hooks and their status
 in an interactive session:
