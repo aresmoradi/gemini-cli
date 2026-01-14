@@ -394,10 +394,10 @@ export async function main() {
     }
   }
 
-  const remoteAdminSettings = partialConfig.getRemoteAdminSettings();
-  // Set remote admin settings if returned from CCPA.
-  if (remoteAdminSettings) {
-    settings.setRemoteAdminSettings(remoteAdminSettings);
+  const adminControls = partialConfig.getRemoteAdminControls();
+  // Set admin settings if admin controls are returned from CCPA.
+  if (adminControls) {
+    settings.setRemoteAdminSettings(adminControls);
   }
 
   // hop into sandbox if we are outside and sandboxing is enabled

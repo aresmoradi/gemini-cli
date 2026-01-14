@@ -452,7 +452,7 @@ describe('gemini.tsx main function kitty protocol', () => {
       getOutputFormat: () => 'text',
       getExtensions: () => [],
       getUsageStatisticsEnabled: () => false,
-      getRemoteAdminSettings: () => undefined,
+      getRemoteAdminControls: () => undefined,
       setTerminalBackground: vi.fn(),
       storage: {
         getProjectTempDir: vi.fn().mockReturnValue('/tmp/gemini-test'),
@@ -557,7 +557,7 @@ describe('gemini.tsx main function kitty protocol', () => {
       getScreenReader: () => false,
       getGeminiMdFileCount: () => 0,
       getProjectRoot: () => '/',
-      getRemoteAdminSettings: () => undefined,
+      getRemoteAdminControls: () => undefined,
       setTerminalBackground: vi.fn(),
     } as unknown as Config;
 
@@ -644,7 +644,7 @@ describe('gemini.tsx main function kitty protocol', () => {
       getGeminiMdFileCount: () => 0,
       getProjectRoot: () => '/',
       refreshAuth: vi.fn(),
-      getRemoteAdminSettings: () => undefined,
+      getRemoteAdminControls: () => undefined,
       setTerminalBackground: vi.fn(),
     } as unknown as Config;
 
@@ -730,7 +730,7 @@ describe('gemini.tsx main function kitty protocol', () => {
       getUsageStatisticsEnabled: () => false,
       refreshAuth: vi.fn(),
       setTerminalBackground: vi.fn(),
-      getRemoteAdminSettings: () => undefined,
+      getRemoteAdminControls: () => undefined,
     } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     vi.spyOn(themeManager, 'setActiveTheme').mockReturnValue(false);
@@ -814,7 +814,7 @@ describe('gemini.tsx main function kitty protocol', () => {
       getFileFilteringRespectGitIgnore: () => true,
       getOutputFormat: () => 'text',
       getUsageStatisticsEnabled: () => false,
-      getRemoteAdminSettings: () => undefined,
+      getRemoteAdminControls: () => undefined,
       setTerminalBackground: vi.fn(),
       storage: {
         getProjectTempDir: vi.fn().mockReturnValue('/tmp/gemini-test'),
@@ -900,7 +900,7 @@ describe('gemini.tsx main function kitty protocol', () => {
       getFileFilteringRespectGitIgnore: () => true,
       getOutputFormat: () => 'text',
       getUsageStatisticsEnabled: () => false,
-      getRemoteAdminSettings: () => undefined,
+      getRemoteAdminControls: () => undefined,
       setTerminalBackground: vi.fn(),
       storage: {
         getProjectTempDir: vi.fn().mockReturnValue('/tmp/gemini-test'),
@@ -982,7 +982,7 @@ describe('gemini.tsx main function kitty protocol', () => {
       getUsageStatisticsEnabled: () => false,
       refreshAuth: vi.fn(),
       setTerminalBackground: vi.fn(),
-      getRemoteAdminSettings: () => undefined,
+      getRemoteAdminControls: () => undefined,
     } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     vi.mock('./utils/readStdin.js', () => ({
@@ -1144,7 +1144,7 @@ describe('gemini.tsx main function exit codes', () => {
       getOutputFormat: () => 'text',
       getExtensions: () => [],
       getUsageStatisticsEnabled: () => false,
-      getRemoteAdminSettings: () => undefined,
+      getRemoteAdminControls: () => undefined,
       setTerminalBackground: vi.fn(),
       storage: {
         getProjectTempDir: vi.fn().mockReturnValue('/tmp/gemini-test'),
@@ -1217,7 +1217,7 @@ describe('gemini.tsx main function exit codes', () => {
       storage: {
         getProjectTempDir: vi.fn().mockReturnValue('/tmp/gemini-test'),
       },
-      getRemoteAdminSettings: () => undefined,
+      getRemoteAdminControls: () => undefined,
     } as unknown as Config);
     vi.mocked(loadSettings).mockReturnValue(
       createMockSettings({

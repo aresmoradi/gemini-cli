@@ -346,9 +346,9 @@ export class LoadedSettings {
     coreEvents.emitSettingsChanged();
   }
 
-  setRemoteAdminSettings(remoteSettings: GeminiCodeAssistSetting): void {
+  setRemoteAdminSettings(adminControls: GeminiCodeAssistSetting): void {
     const admin: Settings['admin'] = {};
-    const { secureModeEnabled, mcpSetting, cliFeatureSetting } = remoteSettings;
+    const { secureModeEnabled, mcpSetting, cliFeatureSetting } = adminControls;
 
     if (secureModeEnabled !== undefined) {
       admin.secureModeEnabled = secureModeEnabled;

@@ -540,7 +540,7 @@ export class Config {
   private readonly planEnabled: boolean;
   private contextManager?: ContextManager;
   private terminalBackground: string | undefined = undefined;
-  private remoteAdminSettings: GeminiCodeAssistSetting | undefined;
+  private remoteAdminControls: GeminiCodeAssistSetting | undefined;
   private latestApiRequest: GenerateContentParameters | undefined;
 
   constructor(params: ConfigParameters) {
@@ -967,12 +967,12 @@ export class Config {
     this.latestApiRequest = req;
   }
 
-  getRemoteAdminSettings(): GeminiCodeAssistSetting | undefined {
-    return this.remoteAdminSettings;
+  getRemoteAdminControls(): GeminiCodeAssistSetting | undefined {
+    return this.remoteAdminControls;
   }
 
-  setRemoteAdminSettings(settings: GeminiCodeAssistSetting): void {
-    this.remoteAdminSettings = settings;
+  setRemoteAdminControls(controls: GeminiCodeAssistSetting): void {
+    this.remoteAdminControls = controls;
   }
 
   shouldLoadMemoryFromIncludeDirectories(): boolean {
