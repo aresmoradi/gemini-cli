@@ -188,14 +188,9 @@ export class GeminiCliSession {
           agent: this.agent,
           session: this,
         };
-        try {
-          const newInstructions = this.instructions(context);
-          this.config.setUserMemory(newInstructions);
-          client.updateSystemInstruction();
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error('Error resolving dynamic instructions:', e);
-        }
+        const newInstructions = await this.instructions(context);
+        this.config.setUserMemory(newInstructions);
+        client.updateSystemInstruction();
       }
 
       const stream = client.sendMessageStream(request, signal, sessionId);

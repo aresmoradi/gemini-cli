@@ -93,6 +93,35 @@ describe('GeminiCliAgent Integration', () => {
     expect(responseText2).toContain('2');
   }, 30000);
 
+  it('handles async dynamic instructions', async () => {
+    const goldenFile = getGoldenPath('agent-async-instructions');
+
+    const agent = new GeminiCliAgent({
+      instructions: async (_ctx) => {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        return 'You are a helpful assistant. The secret word is "BLUEBERRY".';
+      },
+      model: 'gemini-2.0-flash',
+      recordResponses: RECORD_MODE ? goldenFile : undefined,
+      fakeResponses: RECORD_MODE ? undefined : goldenFile,
+    });
+
+    const session = agent.session();
+    const events = [];
+    const stream = session.sendStream('What is the secret word?');
+
+    for await (const event of stream) {
+      events.push(event);
+    }
+
+    const responseText = events
+      .filter((e) => e.type === 'content')
+      .map((e) => (typeof e.value === 'string' ? e.value : ''))
+      .join('');
+
+    expect(responseText).toContain('BLUEBERRY');
+  }, 30000);
+
   it('throws when dynamic instructions fail', async () => {
     const agent = new GeminiCliAgent({
       instructions: () => {

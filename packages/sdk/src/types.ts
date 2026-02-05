@@ -10,7 +10,9 @@ import type { SkillReference } from './skills.js';
 import type { GeminiCliAgent } from './agent.js';
 import type { GeminiCliSession } from './session.js';
 
-export type SystemInstructions = string | ((context: SessionContext) => string);
+export type SystemInstructions =
+  | string
+  | ((context: SessionContext) => string | Promise<string>);
 
 export interface GeminiCliAgentOptions {
   instructions?: SystemInstructions;
