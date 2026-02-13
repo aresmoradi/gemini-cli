@@ -1351,8 +1351,7 @@ Logging in with Google... Restarting Gemini CLI to continue.
         recordExitFail(config);
       }
       if (count > 1) {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        handleSlashCommand('/quit', undefined, undefined, false);
+        void handleSlashCommand('/quit', undefined, undefined, false);
       }
     },
     [config, handleSlashCommand],
@@ -1990,8 +1989,6 @@ Logging in with Google... Restarting Gemini CLI to continue.
       showFullTodos,
       filteredConsoleMessages,
       ideContextState,
-      handleCtrlCPress,
-      handleCtrlDPress,
       renderMarkdown,
       ctrlCPressedOnce: ctrlCPressCount >= 1,
       ctrlDPressedOnce: ctrlDPressCount >= 1,
@@ -2103,8 +2100,6 @@ Logging in with Google... Restarting Gemini CLI to continue.
       showFullTodos,
       filteredConsoleMessages,
       ideContextState,
-      handleCtrlCPress,
-      handleCtrlDPress,
       renderMarkdown,
       ctrlCPressCount,
       ctrlDPressCount,
