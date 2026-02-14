@@ -107,7 +107,7 @@ import { type BackgroundShell } from './hooks/shellCommandProcessor.js';
 import { useVim } from './hooks/vim.js';
 import { type LoadableSettingScope, SettingScope } from '../config/settings.js';
 import { type InitializationResult } from '../core/initializer.js';
-import { useFocus } from './hooks/useFocus.js';
+import { useFocusState } from './hooks/useFocus.js';
 import { useKeypress, type Key } from './hooks/useKeypress.js';
 import { KeypressPriority } from './contexts/KeypressContext.js';
 import { keyMatchers, Command } from './keyMatchers.js';
@@ -1001,10 +1001,6 @@ Logging in with Google... Restarting Gemini CLI to continue.
       quit: (messages: HistoryItem[]) => {
         setQuittingMessages(messages);
         setTimeout(async () => {
-          await notifyMacOs(
-            settings,
-            buildMacNotificationContent({ type: 'session_complete' }),
-          );
           await runExitCleanup();
           process.exit(0);
         }, 100);
@@ -1433,7 +1429,7 @@ Logging in with Google... Restarting Gemini CLI to continue.
     sanitizationConfig: config.sanitizationConfig,
   });
 
-  const isFocused = useFocus();
+  const { isFocused, hasReceivedFocusEvent } = useFocusState();
 
   // Context file names computation
   const contextFileNames = useMemo(() => {
@@ -2115,7 +2111,8 @@ Logging in with Google... Restarting Gemini CLI to continue.
     const hadPendingAttention = hadPendingAttentionRef.current;
     hadPendingAttentionRef.current = hasPendingAttention;
 
-    if (!hasPendingAttention || isFocused) {
+    const shouldSuppressForFocus = hasReceivedFocusEvent && isFocused;
+    if (!hasPendingAttention || shouldSuppressForFocus) {
       return;
     }
 
@@ -2130,7 +2127,11 @@ Logging in with Google... Restarting Gemini CLI to continue.
       lastSent.key === currentKey &&
       now - lastSent.sentAt < ATTENTION_NOTIFICATION_COOLDOWN_MS;
 
-    if (!justEnteredAttentionState && !justLostFocus && !keyChanged) {
+    const shouldNotifyByStateChange = hasReceivedFocusEvent
+      ? justEnteredAttentionState || justLostFocus || keyChanged
+      : justEnteredAttentionState || keyChanged;
+
+    if (!shouldNotifyByStateChange) {
       return;
     }
 
@@ -2147,7 +2148,7 @@ Logging in with Google... Restarting Gemini CLI to continue.
       settings,
       buildMacNotificationContent(pendingAttentionNotification.event),
     );
-  }, [isFocused, pendingAttentionNotification, settings]);
+  }, [isFocused, hasReceivedFocusEvent, pendingAttentionNotification, settings]);
 
   useEffect(() => {
     const previousStreamingState = previousStreamingStateRef.current;
@@ -2157,7 +2158,12 @@ Logging in with Google... Restarting Gemini CLI to continue.
       previousStreamingState === StreamingState.Responding &&
       streamingState === StreamingState.Idle;
 
-    if (!justCompletedTurn || isFocused || pendingAttentionNotification) {
+    const shouldSuppressForFocus = hasReceivedFocusEvent && isFocused;
+    if (
+      !justCompletedTurn ||
+      shouldSuppressForFocus ||
+      pendingAttentionNotification
+    ) {
       return;
     }
 
@@ -2169,7 +2175,13 @@ Logging in with Google... Restarting Gemini CLI to continue.
         detail: 'Gemini CLI finished responding.',
       }),
     );
-  }, [streamingState, isFocused, pendingAttentionNotification, settings]);
+  }, [
+    streamingState,
+    isFocused,
+    hasReceivedFocusEvent,
+    pendingAttentionNotification,
+    settings,
+  ]);
 
   const isPassiveShortcutsHelpState =
     isInputActive &&
