@@ -3174,7 +3174,7 @@ describe('Policy Engine Integration in loadCliConfig', () => {
       }),
       expect.anything(),
       undefined,
-      expect.anything(),
+      undefined,
     );
   });
 
@@ -3197,7 +3197,7 @@ describe('Policy Engine Integration in loadCliConfig', () => {
       }),
       expect.anything(),
       undefined,
-      expect.anything(),
+      undefined,
     );
   });
 
@@ -3219,7 +3219,7 @@ describe('Policy Engine Integration in loadCliConfig', () => {
       }),
       expect.anything(),
       undefined,
-      expect.anything(),
+      undefined,
     );
   });
 });
